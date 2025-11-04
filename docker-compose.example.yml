@@ -1,0 +1,39 @@
+services:
+  go2rtc:
+    image: alexxit/go2rtc:latest
+    restart: unless-stopped
+    ports:
+      - "1985:1984"
+      - "8557:8554"
+      - "8556:8555/tcp"
+      - "8556:8555/udp"
+    volumes:
+      - ./go2rtc.yaml:/config/go2rtc.yaml:ro
+    environment:
+      - TZ=America/Los_Angeles
+
+  ptz-api:
+    build: ./ptz-api
+    restart: unless-stopped
+    environment:
+      - CAM1_HOST=10.20.2.122
+      - CAM1_PORT=80
+      - CAM1_USER=USER
+      - CAM1_PASS=PASS
+      - CAM1_PROFILE_TOKEN=
+      - CAM2_HOST=10.20.2.121
+      - CAM2_PORT=80
+      - CAM2_USER=USER
+      - CAM2_PASS=PASS
+      - CAM2_PROFILE_TOKEN=
+      - CORS_ORIGINS=http://localhost:1985,http://127.0.0.1:1985,http://localhost:8090,http://127.0.0.1:8090
+    ports:
+      - "8089:8088"
+
+  ui:
+    image: nginx:alpine
+    restart: unless-stopped
+    ports:
+      - "8090:80"
+    volumes:
+      - ./site:/usr/share/nginx/html:ro

@@ -1,6 +1,6 @@
 streams:
-  ptz: "rtsp://user:password@10.20.2.122:554/iis/live/1/2#rtsp_transport=tcp"
-  fixed:  "rtsp://user:password@10.20.2.121:554/iis/live/1/2#rtsp_transport=tcp"
+  ptz:   "rtsp://USER:PASS@10.20.2.122:554/iis/live/1/2#rtsp_transport=tcp"
+  fixed: "rtsp://USER:PASS@10.20.2.121:554/iis/live/1/2#rtsp_transport=tcp"
 
 api:
   listen: ":1984"
