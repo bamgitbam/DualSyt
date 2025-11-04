@@ -10,4 +10,20 @@ hls:
 
 webrtc:
   candidates:
-    - stun:stun.l.google.com:19302
+   - stun:stun.l.google.com:19302
+    
+# Keep Secrets in .env
+
+#streams:
+  #ptz:   "${PTZ_RTSP}"
+  #fixed: "${FIXED_RTSP}"
+
+#api:
+  #listen: ":${GO2RTC_HTTP_PORT}"
+
+#hls:
+  #enabled: ${GO2RTC_ENABLE_HLS}
+
+#webrtc:
+  #candidates:
+    #- stun:${GO2RTC_STUN}
