@@ -1,0 +1,88 @@
+Environment (.env) Setup
+
+Create a .env at the repo root so both go2rtc and ptz-api pick it up:
+
+# ===== Camera RTSP sources for go2rtc =====
+PTZ_RTSP=rtsp://USER:PASS@10.20.2.122:554/iis/live/1/2#rtsp_transport=tcp
+FIXED_RTSP=rtsp://USER:PASS@10.20.2.121:554/iis/live/1/2#rtsp_transport=tcp
+
+# ===== ONVIF / PTZ API camera config (two cameras) =====
+CAM1_HOST=10.20.2.122
+CAM1_PORT=80
+CAM1_USER=USER
+CAM1_PASS=PASS
+CAM1_PROFILE_TOKEN=
+
+CAM2_HOST=10.20.2.121
+CAM2_PORT=80
+CAM2_USER=USER
+CAM2_PASS=PASS
+CAM2_PROFILE_TOKEN=
+
+# ===== FastAPI PTZ service (container listens on 8088; host maps to 8089) =====
+API_HOST=0.0.0.0
+API_PORT=8088
+
+# ===== CORS origins (where you'll open ui.html / streams from) =====
+CORS_ORIGINS=http://localhost:1985,http://127.0.0.1:1985,http://localhost:8090,http://127.0.0.1:8090
+
+# ===== go2rtc (container listens on 1984; host maps to 1985) =====
+GO2RTC_HTTP_PORT=1984
+GO2RTC_ENABLE_HLS=true
+GO2RTC_STUN=stun.l.google.com:19302
+
+# ===== Timezone =====
+TZ=America/Los_Angeles
+
+
+Quick-create from shell:
+
+cat > .env <<'EOF'
+# (paste the block above here)
+EOF
+
+
+Remember to replace USER:PASS with your actual camera credentials.
+
+Python Requirements
+
+ptz-api/requirements.txt (already in repo, ensure it looks like this):
+
+fastapi>=0.115
+uvicorn[standard]>=0.30
+onvif-zeep>=0.2.12
+python-dotenv>=1.0
+requests>=2.32
+
+
+Install (if running the API natively):
+
+pip install -r ptz-api/requirements.txt
+
+
+Docker users don’t need to run pip locally—the ptz-api container installs these when it builds.
+
+Make It “Always Run”
+Option A — Docker (auto-start at boot)
+
+Your docker-compose.yml already uses restart: unless-stopped on all services. Ensure Docker itself is enabled at boot:
+
+sudo systemctl enable docker
+
+
+That’s it: after any reboot, Docker starts, and Compose-managed services come up automatically.
+
+(Optional) Auto-update containers (watchtower):
+
+# add to docker-compose.yml (top-level alongside other services)
+watchtower:
+  image: containrrr/watchtower
+  restart: unless-stopped
+  volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+  command: --cleanup --interval 3600
+
+
+Bring it up:
+
+docker compose up -d
