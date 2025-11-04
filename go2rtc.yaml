@@ -1,0 +1,13 @@
+streams:
+  ptz: "rtsp://user:Bodieisadog1@192.168.2.122:554/iis/live/1/2#rtsp_transport=tcp"
+  fixed:  "rtsp://user:Bodieisadog1@192.168.2.121:554/iis/live/1/2#rtsp_transport=tcp"
+
+api:
+  listen: ":1984"
+
+hls:
+  enabled: true
+
+webrtc:
+  candidates:
+    - stun:stun.l.google.com:19302

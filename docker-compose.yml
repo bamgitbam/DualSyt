@@ -1,0 +1,44 @@
+services:
+  go2rtc:
+    image: alexxit/go2rtc:latest
+    container_name: go2rtc1
+    restart: unless-stopped
+    ports:
+      - "1985:1984"       # Web UI / HTTP (HLS, MSE, WebRTC page)
+      - "8557:8554"       # RTSP (optional)
+      - "8556:8555/tcp"   # WebRTC TCP
+      - "8556:8555/udp"   # WebRTC UDP
+    volumes:
+      - ./go2rtc.yaml:/config/go2rtc.yaml:ro
+    environment:
+      - TZ=America/Los_Angeles
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:1984/"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  ptz-api:
+    build: ./ptz-api
+    container_name: ptz-api
+    restart: unless-stopped
+    environment:
+      # ptz
+      - CAM1_HOST=192.168.2.122
+      - CAM1_PORT=80
+      - CAM1_USER=user
+      - CAM1_PASS=Bodieisadog1
+      - CAM1_PROFILE_TOKEN=
+      # fixed
+      - CAM2_HOST=192.168.2.121
+      - CAM2_PORT=80
+      - CAM2_USER=user
+      - CAM2_PASS=Bodieisadog1
+      - CAM2_PROFILE_TOKEN=
+      # Allow your UI origins (1985 is go2rtc now; add others if you serve ui.html elsewhere)
+      - CORS_ORIGINS=http://localhost:1985,http://127.0.0.1:1985
+    ports:
+      - "8089:8088"       # REST PTZ API
+    depends_on:
+      go2rtc:
+        condition: service_healthy
