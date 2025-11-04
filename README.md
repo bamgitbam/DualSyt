@@ -31,10 +31,6 @@ Tested on desktop (Chromium/Chrome/Safari), iPhone, Samsung/Android, and **Raspb
 ├─ ui.html
 ├─ logo-2.39620a38.png
 └─ README.md
-```
-
-**Security note:** `go2rtc.yaml` contains RTSP URLs with credentials.  
-**Do not commit** your real `go2rtc.yaml` — use the included `go2rtc.yaml.example` and add `go2rtc.yaml` to `.gitignore` (already done below).
 
 ---
 
